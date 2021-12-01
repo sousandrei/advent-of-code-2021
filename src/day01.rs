@@ -1,7 +1,7 @@
-pub fn input() -> Vec<i32> {
-    let input = include_bytes!("inputs/day01.txt");
+use std::fs::read_to_string;
 
-    String::from_utf8(input.to_vec())
+pub fn input() -> Vec<i32> {
+    read_to_string("inputs/day01.txt")
         .unwrap()
         .split('\n')
         .map(|n| n.parse::<i32>().unwrap())
@@ -39,6 +39,7 @@ pub fn part2(integers: &[i32]) -> i32 {
         if curr_sum > last {
             count += 1;
         }
+
         last = curr_sum;
     }
 
