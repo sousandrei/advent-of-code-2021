@@ -6,14 +6,13 @@ macro_rules! bench {
         use $path::*;
 
         let data = input();
-        let data2 = data.clone();
 
         $c.bench_function(concat!(stringify!($path), "::part1"), |b| {
-            b.iter(|| black_box(part1(black_box(data.clone()))))
+            b.iter(|| black_box(part1(black_box(&data))))
         });
 
         $c.bench_function(concat!(stringify!($path), "::part2"), |b| {
-            b.iter(|| black_box(part1(black_box(data2.clone()))))
+            b.iter(|| black_box(part2(black_box(&data))))
         });
     };
 }

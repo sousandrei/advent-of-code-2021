@@ -6,8 +6,8 @@ macro_rules! run_day {
         println!(
             "{}: part1 = {}, part2 = {}",
             stringify!($day),
-            part1(i.clone()),
-            part2(i)
+            part1(&i),
+            part2(&i)
         );
     };
 }
