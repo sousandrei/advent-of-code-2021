@@ -1,0 +1,11 @@
+[package]
+edition = "2021"
+name = "aoc2021"
+version = "0.1.0"
+
+[dependencies]
+criterion = "0.3.5"
+
+[[bench]]
+harness = false
+name = "bench"
