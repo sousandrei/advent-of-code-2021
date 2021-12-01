@@ -25,14 +25,16 @@ pub fn part1(integers: &[i32]) -> i32 {
 pub fn part2(integers: &[i32]) -> i32 {
     let mut count = 0;
     let mut last = 0;
-    let mut window: [i32; 3] = [0, 0, 0];
 
-    for (i, curr) in integers.iter().enumerate() {
-        if i < 3 {
-            window[i] = *curr;
-            continue;
-        }
+    let mut integers = integers.iter();
 
+    let mut window: [i32; 3] = [
+        *integers.next().unwrap(),
+        *integers.next().unwrap(),
+        *integers.next().unwrap(),
+    ];
+
+    for (i, curr) in integers.enumerate() {
         window[i % 3] = *curr;
         let curr_sum: i32 = window.iter().sum();
 
