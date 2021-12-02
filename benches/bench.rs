@@ -25,7 +25,7 @@ where
 }
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    bench!(c, 1);
+    // bench!(c, 1);
     bench!(c, 2);
 }
 
