@@ -1,19 +1,28 @@
-macro_rules! run_day {
-    ($day:path) => {
-        use $day::*;
+use aoc2021::days::*;
 
-        let i = input();
-        println!(
-            "{}: part1 = {}, part2 = {}",
-            stringify!($day),
-            part1(&i),
-            part2(&i)
-        );
+macro_rules! run_day {
+    ($d:expr) => {
+        paste::expr! {
+            solve::<[<day $d>]::[<Day $d>]>($d);
+        }
     };
 }
 
 fn main() {
-    use aoc2021::*;
+    run_day!(1);
+    run_day!(2);
+}
 
-    run_day!(day01);
+fn solve<S>(day_number: i32)
+where
+    S: Day,
+{
+    let i = S::input();
+
+    println!(
+        "{}: part1 = {}, part2 = {}",
+        day_number,
+        S::part1(&i),
+        S::part2(&i)
+    );
 }
