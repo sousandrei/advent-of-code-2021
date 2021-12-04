@@ -1,7 +1,5 @@
-use std::fmt::Debug;
-
 pub trait Day {
-    type In: Debug + PartialEq;
+    type In;
 
     fn input() -> Self::In;
     fn part1(input: &Self::In) -> i32;
@@ -10,3 +8,4 @@ pub trait Day {
 
 pub mod day1;
 pub mod day2;
+pub mod day3;

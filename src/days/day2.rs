@@ -44,7 +44,7 @@ impl Day for Day2 {
             };
         }
 
-        return depth * pos;
+        depth * pos
     }
 
     fn part2(instructions: &Self::In) -> i32 {
@@ -63,7 +63,7 @@ impl Day for Day2 {
             };
         }
 
-        return depth * pos;
+        depth * pos
     }
 }
 
