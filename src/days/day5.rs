@@ -2,33 +2,28 @@ use std::{collections::HashMap, fs::read_to_string, str::FromStr};
 
 use super::Day;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
-pub struct Count {
-    count: usize,
-    point: Point,
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
+#[derive(PartialEq, Eq, Hash)]
 pub struct Point {
-    x: u16,
-    y: u16,
+    x: i32,
+    y: i32,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Line {
     from: Point,
     to: Point,
 }
 
 impl Line {
-    pub fn get_points(&self, diagonal: bool) -> Vec<Point> {
+    pub fn count_points(&self, points: &mut HashMap<Point, usize>, diagonal: bool) {
         let max_x = self.from.x.max(self.to.x);
         let max_y = self.from.y.max(self.to.y);
 
         let min_x = self.from.x.min(self.to.x);
         let min_y = self.from.y.min(self.to.y);
 
-        let mut points = vec![];
+        if !diagonal && !self.is_straight() {
+            return;
+        }
 
         if diagonal {
             let len = (max_x - min_x).max(max_y - min_y);
@@ -46,25 +41,26 @@ impl Line {
                     _ => self.from.y,
                 };
 
-                points.push(Point { x, y });
+                let p = Point { x, y };
+                *points.entry(p).or_insert(0) += 1;
             }
 
-            return points;
+            return;
         }
 
         if self.from.x == self.to.x {
             for y in min_y..=max_y {
-                points.push(Point { x: self.from.x, y })
+                let p = Point { x: self.from.x, y };
+                *points.entry(p).or_insert(0) += 1;
             }
         }
 
         if self.from.y == self.to.y {
             for x in min_x..=max_x {
-                points.push(Point { x, y: self.from.y })
+                let p = Point { x, y: self.from.y };
+                *points.entry(p).or_insert(0) += 1;
             }
         }
-
-        points
     }
 
     pub fn is_straight(&self) -> bool {
@@ -77,7 +73,7 @@ impl FromStr for Line {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut points = s.split(" -> ").map(|p| {
-            let mut xy = p.split(",");
+            let mut xy = p.split(',');
 
             Point {
                 x: xy.next().unwrap().parse().unwrap(),
@@ -114,16 +110,10 @@ impl Day for Day5 {
     }
 
     fn part1(data: &Self::In) -> i32 {
-        let mut counter: HashMap<Point, i32> = HashMap::new();
+        let mut counter: HashMap<Point, usize> = HashMap::new();
 
         for line in data.iter() {
-            if !line.is_straight() {
-                continue;
-            }
-
-            for point in line.get_points(false).into_iter() {
-                *counter.entry(point).or_insert(0) += 1;
-            }
+            line.count_points(&mut counter, false)
         }
 
         let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
@@ -131,12 +121,10 @@ impl Day for Day5 {
     }
 
     fn part2(data: &Self::In) -> i32 {
-        let mut counter: HashMap<Point, i32> = HashMap::new();
+        let mut counter: HashMap<Point, usize> = HashMap::new();
 
         for line in data.iter() {
-            for point in line.get_points(true).into_iter() {
-                *counter.entry(point).or_insert(0) += 1;
-            }
+            line.count_points(&mut counter, true)
         }
 
         let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
