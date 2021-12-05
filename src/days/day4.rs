@@ -2,21 +2,31 @@ use std::{fs::read_to_string, str::FromStr};
 
 use super::Day;
 
+const LINE_SIZE: usize = 5;
+
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Board {
-    numbers: Vec<Vec<i32>>,
-    hits: Vec<Vec<i32>>,
+    numbers: [i32; LINE_SIZE * LINE_SIZE],
+    hits: [i32; LINE_SIZE * LINE_SIZE],
+}
+
+fn check_line(line: &[i32]) -> bool {
+    for &n in line.iter() {
+        if n < 1 {
+            return false;
+        }
+    }
+
+    true
 }
 
 impl Board {
     fn sum_unmarked(&self) -> i32 {
         let mut sum = 0;
 
-        for i in 0..self.numbers[0].len() {
-            for j in 0..self.numbers.len() {
-                if self.hits[i][j] == 0 {
-                    sum += self.numbers[i][j];
-                }
+        for i in 0..self.numbers.len() {
+            if self.hits[i] == 0 {
+                sum += self.numbers[i];
             }
         }
 
@@ -24,33 +34,25 @@ impl Board {
     }
 
     pub fn check_row(&self) -> bool {
-        let check_line = |line: &Vec<i32>| {
-            for &n in line.iter() {
-                if n < 1 {
-                    return false;
-                }
-            }
-
-            true
-        };
-
-        for col in self.hits.iter() {
-            if check_line(col) {
+        for i in (0..self.hits.len()).step_by(LINE_SIZE) {
+            if check_line(&self.hits[i..i + LINE_SIZE]) {
                 return true;
             }
         }
 
         false
     }
-    pub fn check_col(&self) -> bool {
-        for i in 0..self.hits[0].len() {
-            let mut ones = vec![];
 
-            for j in 0..self.hits.len() {
-                ones.push(self.hits[j][i]);
+    pub fn check_col(&self) -> bool {
+        for i in 0..LINE_SIZE {
+            let mut cols = [0; LINE_SIZE];
+
+            for j in 0..LINE_SIZE {
+                let index = j * LINE_SIZE + i;
+                cols[j] = self.hits[index];
             }
 
-            if ones.iter().find(|&&x| x == 0).is_none() {
+            if check_line(&cols) {
                 return true;
             }
         }
@@ -59,11 +61,9 @@ impl Board {
     }
 
     pub fn compute_guess(&mut self, guess: i32) {
-        for (i, row) in self.numbers.iter().enumerate() {
-            for (j, n) in row.iter().enumerate() {
-                if *n == guess {
-                    self.hits[i][j] = 1;
-                }
+        for (i, n) in self.numbers.iter().enumerate() {
+            if n == &guess {
+                self.hits[i] = 1;
             }
         }
     }
@@ -73,17 +73,19 @@ impl FromStr for Board {
     type Err = std::num::ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let numbers: Vec<Vec<i32>> = s
-            .split('\n')
-            .map(|line| {
-                line.split(' ')
-                    .map(str::parse::<i32>)
-                    .map(Result::unwrap)
-                    .collect::<Vec<i32>>()
-            })
+        let mut numbers = [0; LINE_SIZE * LINE_SIZE];
+        let hits = [0; LINE_SIZE * LINE_SIZE];
+
+        let numbers_data: Vec<i32> = s
+            .replace('\n', " ")
+            .split(' ')
+            .map(str::parse::<i32>)
+            .map(Result::unwrap)
             .collect();
 
-        let hits = vec![vec![0; numbers[0].len()]; numbers.len()];
+        for (i, n) in numbers_data.into_iter().enumerate() {
+            numbers[i] = n;
+        }
 
         let board = Board { numbers, hits };
 
