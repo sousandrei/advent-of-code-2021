@@ -6,7 +6,6 @@ use super::Day;
 pub struct Board {
     numbers: Vec<Vec<i32>>,
     hits: Vec<Vec<i32>>,
-    won: bool,
 }
 
 impl Board {
@@ -25,7 +24,7 @@ impl Board {
     }
 
     pub fn check_row(&self) -> bool {
-        let check_line = |line: Vec<i32>| {
+        let check_line = |line: &Vec<i32>| {
             for &n in line.iter() {
                 if n < 1 {
                     return false;
@@ -36,7 +35,7 @@ impl Board {
         };
 
         for col in self.hits.iter() {
-            if check_line(col.clone()) {
+            if check_line(col) {
                 return true;
             }
         }
@@ -86,11 +85,7 @@ impl FromStr for Board {
 
         let hits = vec![vec![0; numbers[0].len()]; numbers.len()];
 
-        let board = Board {
-            numbers,
-            hits,
-            won: false,
-        };
+        let board = Board { numbers, hits };
 
         Ok(board)
     }
@@ -157,18 +152,18 @@ impl Day for Day4 {
         let mut last_win = None;
 
         for guess in game.input.iter() {
-            for b in game.board.iter_mut() {
-                if b.won {
-                    continue;
-                }
+            let mut i = 0;
+
+            while i < game.board.len() {
+                let b = &mut game.board[i];
 
                 b.compute_guess(*guess);
 
                 if b.check_col() || b.check_row() {
-                    b.won = true;
-
-                    last_win = Some(b.clone());
+                    last_win = Some(game.board.remove(i));
                     last_guess = *guess;
+                } else {
+                    i += 1;
                 }
             }
         }
