@@ -47,9 +47,9 @@ impl Board {
         for i in 0..LINE_SIZE {
             let mut cols = [0; LINE_SIZE];
 
-            for j in 0..LINE_SIZE {
+            for (j, n) in cols.iter_mut().enumerate().take(LINE_SIZE) {
                 let index = j * LINE_SIZE + i;
-                cols[j] = self.hits[index];
+                *n = self.hits[index];
             }
 
             if check_line(&cols) {
@@ -76,14 +76,13 @@ impl FromStr for Board {
         let mut numbers = [0; LINE_SIZE * LINE_SIZE];
         let hits = [0; LINE_SIZE * LINE_SIZE];
 
-        let numbers_data: Vec<i32> = s
+        for (i, n) in s
             .replace('\n', " ")
             .split(' ')
             .map(str::parse::<i32>)
             .map(Result::unwrap)
-            .collect();
-
-        for (i, n) in numbers_data.into_iter().enumerate() {
+            .enumerate()
+        {
             numbers[i] = n;
         }
 
