@@ -57,6 +57,8 @@ fn calculate_dynamic(
 
 impl Day for Day3 {
     type In = Vec<Vec<u8>>;
+    type P1 = i32;
+    type P2 = i32;
 
     fn input() -> Self::In {
         let bytes: Vec<u8> = read("inputs/day3.txt")
@@ -73,7 +75,7 @@ impl Day for Day3 {
         bytes.split(|b| *b == 2).map(|arr| arr.to_vec()).collect()
     }
 
-    fn part1(numbers: &Self::In) -> i32 {
+    fn part1(numbers: &Self::In) -> Self::P1 {
         let mut counter: Vec<Counter> = vec![];
 
         numbers
@@ -91,7 +93,7 @@ impl Day for Day3 {
         gamma * epsilon
     }
 
-    fn part2(numbers: &Self::In) -> i32 {
+    fn part2(numbers: &Self::In) -> Self::P2 {
         let oxigen = calculate_dynamic(numbers.clone(), |counter, i, &number| {
             if counter[i].ones >= counter[i].zeros {
                 number[i] == 1

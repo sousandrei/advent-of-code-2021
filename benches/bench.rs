@@ -25,7 +25,7 @@ where
 }
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    bench!(c, 5);
+    bench!(c, 6);
 }
 
 criterion_group!(benches, criterion_benchmark);

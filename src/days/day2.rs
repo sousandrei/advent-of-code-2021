@@ -13,6 +13,8 @@ pub struct Day2;
 
 impl Day for Day2 {
     type In = Vec<Instruction>;
+    type P1 = i32;
+    type P2 = i32;
 
     fn input() -> Self::In {
         read_to_string("inputs/day2.txt")
@@ -32,7 +34,7 @@ impl Day for Day2 {
             .collect()
     }
 
-    fn part1(instructions: &Self::In) -> i32 {
+    fn part1(instructions: &Self::In) -> Self::P1 {
         let mut depth = 0;
         let mut pos = 0;
 
@@ -47,7 +49,7 @@ impl Day for Day2 {
         depth * pos
     }
 
-    fn part2(instructions: &Self::In) -> i32 {
+    fn part2(instructions: &Self::In) -> Self::P2 {
         let mut depth = 0;
         let mut pos = 0;
         let mut aim = 0;

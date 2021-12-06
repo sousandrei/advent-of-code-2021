@@ -124,13 +124,15 @@ impl Day4 {
 
 impl Day for Day4 {
     type In = Game;
+    type P1 = i32;
+    type P2 = i32;
 
     fn input() -> Self::In {
         let data = read_to_string("inputs/day4.txt").unwrap();
         Day4::parse_input(&data)
     }
 
-    fn part1(game: &Self::In) -> i32 {
+    fn part1(game: &Self::In) -> Self::P1 {
         let mut game = game.clone();
 
         for guess in game.input.iter() {
@@ -146,7 +148,7 @@ impl Day for Day4 {
         0
     }
 
-    fn part2(game: &Self::In) -> i32 {
+    fn part2(game: &Self::In) -> Self::P2 {
         let mut game = game.clone();
 
         let mut last_guess = 0;

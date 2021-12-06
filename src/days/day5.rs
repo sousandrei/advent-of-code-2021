@@ -103,13 +103,15 @@ impl Day5 {
 
 impl Day for Day5 {
     type In = Vec<Line>;
+    type P1 = i32;
+    type P2 = i32;
 
     fn input() -> Self::In {
         let data = read_to_string("inputs/day5.txt").unwrap();
         Day5::parse_input(&data)
     }
 
-    fn part1(data: &Self::In) -> i32 {
+    fn part1(data: &Self::In) -> Self::P1 {
         let mut counter: HashMap<Point, usize> = HashMap::new();
 
         for line in data.iter() {
@@ -120,7 +122,7 @@ impl Day for Day5 {
         *overlaps as i32
     }
 
-    fn part2(data: &Self::In) -> i32 {
+    fn part2(data: &Self::In) -> Self::P2 {
         let mut counter: HashMap<Point, usize> = HashMap::new();
 
         for line in data.iter() {

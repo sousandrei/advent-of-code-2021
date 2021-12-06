@@ -14,6 +14,7 @@ fn main() {
     run_day!(3);
     run_day!(4);
     run_day!(5);
+    run_day!(6);
 }
 
 fn solve<S>(day_number: i32)

@@ -6,6 +6,8 @@ pub struct Day1;
 
 impl Day for Day1 {
     type In = Vec<i32>;
+    type P1 = i32;
+    type P2 = i32;
 
     fn input() -> Vec<i32> {
         read_to_string("inputs/day1.txt")
