@@ -1,7 +1,5 @@
 use std::{collections::HashMap, fs::read_to_string, str::FromStr};
 
-use super::Day;
-
 #[derive(PartialEq, Eq, Hash)]
 pub struct Point {
     x: i32,
@@ -90,48 +88,38 @@ impl FromStr for Line {
     }
 }
 
-pub struct Day5;
-
-impl Day5 {
-    fn parse_input(data: &str) -> Vec<Line> {
-        data.split('\n')
-            .map(Line::from_str)
-            .map(Result::unwrap)
-            .collect()
-    }
+fn parse_input(data: &str) -> Vec<Line> {
+    data.split('\n')
+        .map(Line::from_str)
+        .map(Result::unwrap)
+        .collect()
 }
 
-impl Day for Day5 {
-    type In = Vec<Line>;
-    type P1 = i32;
-    type P2 = i32;
+pub fn input() -> Vec<Line> {
+    let data = read_to_string("inputs/day5.txt").unwrap();
+    parse_input(&data)
+}
 
-    fn input() -> Self::In {
-        let data = read_to_string("inputs/day5.txt").unwrap();
-        Day5::parse_input(&data)
+pub fn part1(data: &Vec<Line>) -> i32 {
+    let mut counter: HashMap<Point, usize> = HashMap::new();
+
+    for line in data.iter() {
+        line.count_points(&mut counter, false)
     }
 
-    fn part1(data: &Self::In) -> Self::P1 {
-        let mut counter: HashMap<Point, usize> = HashMap::new();
+    let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
+    *overlaps as i32
+}
 
-        for line in data.iter() {
-            line.count_points(&mut counter, false)
-        }
+pub fn part2(data: &Vec<Line>) -> i32 {
+    let mut counter: HashMap<Point, usize> = HashMap::new();
 
-        let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
-        *overlaps as i32
+    for line in data.iter() {
+        line.count_points(&mut counter, true)
     }
 
-    fn part2(data: &Self::In) -> Self::P2 {
-        let mut counter: HashMap<Point, usize> = HashMap::new();
-
-        for line in data.iter() {
-            line.count_points(&mut counter, true)
-        }
-
-        let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
-        *overlaps as i32
-    }
+    let overlaps = &counter.into_iter().filter(|(_, n)| *n > 1).count();
+    *overlaps as i32
 }
 
 #[cfg(test)]
@@ -150,16 +138,16 @@ mod tests {
 0,0 -> 8,8
 5,5 -> 8,2";
 
-        Day5::parse_input(&data)
+        parse_input(&data)
     }
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day5::part1(&input()), 5);
+        assert_eq!(part1(&input()), 5);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day5::part2(&input()), 12);
+        assert_eq!(part2(&input()), 12);
     }
 }

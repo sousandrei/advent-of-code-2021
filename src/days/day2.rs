@@ -1,7 +1,5 @@
 use std::fs::read_to_string;
 
-use super::Day;
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Instruction {
     Up(i32),
@@ -9,64 +7,56 @@ pub enum Instruction {
     Forward(i32),
 }
 
-pub struct Day2;
+pub fn input() -> Vec<Instruction> {
+    read_to_string("inputs/day2.txt")
+        .unwrap()
+        .split('\n')
+        .map(|n| {
+            let parts: Vec<&str> = n.split(' ').collect();
+            let value = parts[1].parse().unwrap();
 
-impl Day for Day2 {
-    type In = Vec<Instruction>;
-    type P1 = i32;
-    type P2 = i32;
+            match parts[0] {
+                "up" => Instruction::Up(value),
+                "down" => Instruction::Down(value),
+                "forward" => Instruction::Forward(value),
+                _ => panic!("Unknown instruction"),
+            }
+        })
+        .collect()
+}
 
-    fn input() -> Self::In {
-        read_to_string("inputs/day2.txt")
-            .unwrap()
-            .split('\n')
-            .map(|n| {
-                let parts: Vec<&str> = n.split(' ').collect();
-                let value = parts[1].parse().unwrap();
+pub fn part1(instructions: &Vec<Instruction>) -> i32 {
+    let mut depth = 0;
+    let mut pos = 0;
 
-                match parts[0] {
-                    "up" => Instruction::Up(value),
-                    "down" => Instruction::Down(value),
-                    "forward" => Instruction::Forward(value),
-                    _ => panic!("Unknown instruction"),
-                }
-            })
-            .collect()
+    for instruction in instructions {
+        match instruction {
+            Instruction::Up(value) => depth -= value,
+            Instruction::Down(value) => depth += value,
+            Instruction::Forward(value) => pos += value,
+        };
     }
 
-    fn part1(instructions: &Self::In) -> Self::P1 {
-        let mut depth = 0;
-        let mut pos = 0;
+    depth * pos
+}
 
-        for instruction in instructions {
-            match instruction {
-                Instruction::Up(value) => depth -= value,
-                Instruction::Down(value) => depth += value,
-                Instruction::Forward(value) => pos += value,
-            };
-        }
+pub fn part2(instructions: &Vec<Instruction>) -> i32 {
+    let mut depth = 0;
+    let mut pos = 0;
+    let mut aim = 0;
 
-        depth * pos
+    for instruction in instructions {
+        match instruction {
+            Instruction::Forward(value) => {
+                pos += value;
+                depth += value * aim;
+            }
+            Instruction::Up(value) => aim -= value,
+            Instruction::Down(value) => aim += value,
+        };
     }
 
-    fn part2(instructions: &Self::In) -> Self::P2 {
-        let mut depth = 0;
-        let mut pos = 0;
-        let mut aim = 0;
-
-        for instruction in instructions {
-            match instruction {
-                Instruction::Forward(value) => {
-                    pos += value;
-                    depth += value * aim;
-                }
-                Instruction::Up(value) => aim -= value,
-                Instruction::Down(value) => aim += value,
-            };
-        }
-
-        depth * pos
-    }
+    depth * pos
 }
 
 #[cfg(test)]
@@ -88,11 +78,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day2::part1(&input()), 150);
+        assert_eq!(part1(&input()), 150);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day2::part2(&input()), 900);
+        assert_eq!(part2(&input()), 900);
     }
 }

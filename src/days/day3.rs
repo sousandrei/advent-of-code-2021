@@ -1,14 +1,10 @@
 use std::fs::read;
 
-use super::Day;
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Counter {
     ones: usize,
     zeros: usize,
 }
-
-pub struct Day3;
 
 fn count_bits(counter: &mut Vec<Counter>, number: &[u8]) {
     for (i, bit) in number.iter().enumerate() {
@@ -55,63 +51,57 @@ fn calculate_dynamic(
         .fold(0, |acc, i| acc << 1 ^ *i as i32)
 }
 
-impl Day for Day3 {
-    type In = Vec<Vec<u8>>;
-    type P1 = i32;
-    type P2 = i32;
+pub fn input() -> Vec<Vec<u8>> {
+    let bytes: Vec<u8> = read("inputs/day3.txt")
+        .unwrap()
+        .iter()
+        .map(|b| match b {
+            b'0' => 0,
+            b'1' => 1,
+            b'\n' => 2,
+            _ => panic!("Invalid input"),
+        })
+        .collect();
 
-    fn input() -> Self::In {
-        let bytes: Vec<u8> = read("inputs/day3.txt")
-            .unwrap()
-            .iter()
-            .map(|b| match b {
-                b'0' => 0,
-                b'1' => 1,
-                b'\n' => 2,
-                _ => panic!("Invalid input"),
-            })
-            .collect();
+    bytes.split(|b| *b == 2).map(|arr| arr.to_vec()).collect()
+}
 
-        bytes.split(|b| *b == 2).map(|arr| arr.to_vec()).collect()
-    }
+pub fn part1(numbers: &Vec<Vec<u8>>) -> i32 {
+    let mut counter: Vec<Counter> = vec![];
 
-    fn part1(numbers: &Self::In) -> Self::P1 {
-        let mut counter: Vec<Counter> = vec![];
+    numbers
+        .iter()
+        .for_each(|number| count_bits(&mut counter, number));
 
-        numbers
-            .iter()
-            .for_each(|number| count_bits(&mut counter, number));
+    let gamma = counter
+        .iter()
+        .fold(0, |acc, count| acc << 1 ^ (count.ones > count.zeros) as i32);
 
-        let gamma = counter
-            .iter()
-            .fold(0, |acc, count| acc << 1 ^ (count.ones > count.zeros) as i32);
+    let epsilon = counter
+        .iter()
+        .fold(0, |acc, count| acc << 1 ^ (count.ones < count.zeros) as i32);
 
-        let epsilon = counter
-            .iter()
-            .fold(0, |acc, count| acc << 1 ^ (count.ones < count.zeros) as i32);
+    gamma * epsilon
+}
 
-        gamma * epsilon
-    }
+pub fn part2(numbers: &Vec<Vec<u8>>) -> i32 {
+    let oxigen = calculate_dynamic(numbers.clone(), |counter, i, &number| {
+        if counter[i].ones >= counter[i].zeros {
+            number[i] == 1
+        } else {
+            number[i] == 0
+        }
+    });
 
-    fn part2(numbers: &Self::In) -> Self::P2 {
-        let oxigen = calculate_dynamic(numbers.clone(), |counter, i, &number| {
-            if counter[i].ones >= counter[i].zeros {
-                number[i] == 1
-            } else {
-                number[i] == 0
-            }
-        });
+    let co2 = calculate_dynamic(numbers.clone(), |counter, i, &number| {
+        if counter[i].ones >= counter[i].zeros {
+            number[i] == 0
+        } else {
+            number[i] == 1
+        }
+    });
 
-        let co2 = calculate_dynamic(numbers.clone(), |counter, i, &number| {
-            if counter[i].ones >= counter[i].zeros {
-                number[i] == 0
-            } else {
-                number[i] == 1
-            }
-        });
-
-        oxigen * co2
-    }
+    oxigen * co2
 }
 
 #[cfg(test)]
@@ -136,11 +126,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day3::part1(&input()), 198);
+        assert_eq!(part1(&input()), 198);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day3::part2(&input()), 230);
+        assert_eq!(part2(&input()), 230);
     }
 }

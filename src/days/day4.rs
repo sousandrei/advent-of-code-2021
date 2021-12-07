@@ -1,7 +1,5 @@
 use std::{fs::read_to_string, str::FromStr};
 
-use super::Day;
-
 const LINE_SIZE: usize = 5;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -98,81 +96,71 @@ pub struct Game {
     board: Vec<Board>,
 }
 
-pub struct Day4;
+fn parse_input(data: &str) -> Game {
+    let data = data.replace("\n ", "\n").replace("  ", " ");
+    let mut data: Vec<&str> = data.split("\n\n").collect();
 
-impl Day4 {
-    fn parse_input(data: &str) -> Game {
-        let data = data.replace("\n ", "\n").replace("  ", " ");
-        let mut data: Vec<&str> = data.split("\n\n").collect();
+    let input = data
+        .remove(0)
+        .split(',')
+        .map(str::parse::<i32>)
+        .map(Result::unwrap)
+        .collect();
 
-        let input = data
-            .remove(0)
-            .split(',')
-            .map(str::parse::<i32>)
-            .map(Result::unwrap)
-            .collect();
+    let board = data
+        .into_iter()
+        .map(Board::from_str)
+        .map(Result::unwrap)
+        .collect();
 
-        let board = data
-            .into_iter()
-            .map(Board::from_str)
-            .map(Result::unwrap)
-            .collect();
-
-        Game { input, board }
-    }
+    Game { input, board }
 }
 
-impl Day for Day4 {
-    type In = Game;
-    type P1 = i32;
-    type P2 = i32;
+pub fn input() -> Game {
+    let data = read_to_string("inputs/day4.txt").unwrap();
+    parse_input(&data)
+}
 
-    fn input() -> Self::In {
-        let data = read_to_string("inputs/day4.txt").unwrap();
-        Day4::parse_input(&data)
-    }
+pub fn part1(game: &Game) -> i32 {
+    let mut game = game.clone();
 
-    fn part1(game: &Self::In) -> Self::P1 {
-        let mut game = game.clone();
+    for guess in game.input.iter() {
+        for b in game.board.iter_mut() {
+            b.compute_guess(*guess);
 
-        for guess in game.input.iter() {
-            for b in game.board.iter_mut() {
-                b.compute_guess(*guess);
-
-                if b.check_col() || b.check_row() {
-                    return b.sum_unmarked() * guess;
-                }
+            if b.check_col() || b.check_row() {
+                return b.sum_unmarked() * guess;
             }
         }
-
-        0
     }
 
-    fn part2(game: &Self::In) -> Self::P2 {
-        let mut game = game.clone();
+    0
+}
 
-        let mut last_guess = 0;
-        let mut last_win = None;
+pub fn part2(game: &Game) -> i32 {
+    let mut game = game.clone();
 
-        for guess in game.input.iter() {
-            let mut i = 0;
+    let mut last_guess = 0;
+    let mut last_win = None;
 
-            while i < game.board.len() {
-                let b = &mut game.board[i];
+    for guess in game.input.iter() {
+        let mut i = 0;
 
-                b.compute_guess(*guess);
+        while i < game.board.len() {
+            let b = &mut game.board[i];
 
-                if b.check_col() || b.check_row() {
-                    last_win = Some(game.board.remove(i));
-                    last_guess = *guess;
-                } else {
-                    i += 1;
-                }
+            b.compute_guess(*guess);
+
+            if b.check_col() || b.check_row() {
+                last_win = Some(game.board.remove(i));
+                last_guess = *guess;
+            } else {
+                i += 1;
             }
         }
-
-        last_win.unwrap().sum_unmarked() * last_guess
     }
+
+    last_win.unwrap().sum_unmarked() * last_guess
 }
 
 #[cfg(test)]
@@ -200,16 +188,16 @@ mod tests {
 22 11 13  6  5
  2  0 12  3  7";
 
-        Day4::parse_input(&data)
+        parse_input(&data)
     }
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day4::part1(&input()), 4512);
+        assert_eq!(part1(&input()), 4512);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day4::part2(&input()), 1924);
+        assert_eq!(part2(&input()), 1924);
     }
 }

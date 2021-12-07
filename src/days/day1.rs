@@ -1,61 +1,51 @@
 use std::fs::read_to_string;
 
-use super::Day;
+pub fn input() -> Vec<i32> {
+    read_to_string("inputs/day1.txt")
+        .unwrap()
+        .split('\n')
+        .map(|n| n.parse::<i32>().unwrap())
+        .collect()
+}
 
-pub struct Day1;
+pub fn part1(integers: &Vec<i32>) -> i32 {
+    let mut count = 0;
+    let mut last = integers[0];
 
-impl Day for Day1 {
-    type In = Vec<i32>;
-    type P1 = i32;
-    type P2 = i32;
-
-    fn input() -> Vec<i32> {
-        read_to_string("inputs/day1.txt")
-            .unwrap()
-            .split('\n')
-            .map(|n| n.parse::<i32>().unwrap())
-            .collect()
+    for curr in integers {
+        if curr > &last {
+            count += 1;
+        }
+        last = *curr;
     }
 
-    fn part1(integers: &Self::In) -> i32 {
-        let mut count = 0;
-        let mut last = integers[0];
+    count
+}
 
-        for curr in integers {
-            if curr > &last {
-                count += 1;
-            }
-            last = *curr;
+pub fn part2(integers: &Vec<i32>) -> i32 {
+    let mut count = 0;
+    let mut last = 0;
+
+    let mut integers = integers.iter();
+
+    let mut window: [i32; 3] = [
+        *integers.next().unwrap(),
+        *integers.next().unwrap(),
+        *integers.next().unwrap(),
+    ];
+
+    for (i, curr) in integers.enumerate() {
+        window[i % 3] = *curr;
+        let curr_sum: i32 = window.iter().sum();
+
+        if curr_sum > last {
+            count += 1;
         }
 
-        count
+        last = curr_sum;
     }
 
-    fn part2(integers: &Self::In) -> i32 {
-        let mut count = 0;
-        let mut last = 0;
-
-        let mut integers = integers.iter();
-
-        let mut window: [i32; 3] = [
-            *integers.next().unwrap(),
-            *integers.next().unwrap(),
-            *integers.next().unwrap(),
-        ];
-
-        for (i, curr) in integers.enumerate() {
-            window[i % 3] = *curr;
-            let curr_sum: i32 = window.iter().sum();
-
-            if curr_sum > last {
-                count += 1;
-            }
-
-            last = curr_sum;
-        }
-
-        count
-    }
+    count
 }
 
 #[cfg(test)]
@@ -70,11 +60,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day1::part1(&input()), 7);
+        assert_eq!(part1(&input()), 7);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day1::part2(&input()), 5);
+        assert_eq!(part2(&input()), 5);
     }
 }
