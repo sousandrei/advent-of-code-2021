@@ -9,35 +9,22 @@ fn parse_input(data: &str) -> Vec<i32> {
         .collect()
 }
 
-fn get_cost(n: i32) -> i32 {
-    if n <= 1 {
-        return n;
-    }
-
-    n + get_cost(n - 1)
-}
-
 pub fn input() -> Vec<i32> {
     let data = read_to_string("inputs/day7.txt").unwrap();
     parse_input(&data)
 }
 
 pub fn part1(crabs: &Vec<i32>) -> i32 {
-    let max = *crabs.iter().max().unwrap();
-    let min = *crabs.iter().min().unwrap();
+    let mut crabs = crabs.clone();
+    crabs.sort_unstable();
 
-    (min..=max)
+    let median = crabs[crabs.len() / 2];
+
+    crabs
         .into_par_iter()
-        .map(|i| {
-            crabs
-                .iter()
-                // maps crabs
-                .map(move |&x| x - i)
-                .map(|x| x.abs())
-                .sum()
-        })
-        .min()
-        .unwrap()
+        .map(move |x| x - median)
+        .map(|x| x.abs())
+        .sum()
 }
 
 pub fn part2(crabs: &Vec<i32>) -> i32 {
@@ -49,8 +36,10 @@ pub fn part2(crabs: &Vec<i32>) -> i32 {
         .map(|i| {
             crabs
                 .iter()
-                .map(move |&x| get_cost((x - i).abs()))
-                .map(|x: i32| x.abs())
+                .map(move |&x| {
+                    let n = (x - i).abs();
+                    (n * (n + 1)) / 2
+                })
                 .sum()
         })
         .min()
