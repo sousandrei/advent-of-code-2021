@@ -1,11 +1,14 @@
 use std::fs::read_to_string;
 
-pub fn input() -> Vec<i32> {
-    read_to_string("inputs/day1.txt")
-        .unwrap()
-        .split('\n')
+fn parse_input(data: &str) -> Vec<i32> {
+    data.split('\n')
         .map(|n| n.parse::<i32>().unwrap())
         .collect()
+}
+
+pub fn input() -> Vec<i32> {
+    let data = read_to_string("inputs/day1.txt").unwrap();
+    parse_input(&data)
 }
 
 pub fn part1(integers: &Vec<i32>) -> i32 {
@@ -50,12 +53,21 @@ pub fn part2(integers: &Vec<i32>) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use std::vec;
-
     use super::*;
 
     fn input() -> Vec<i32> {
-        vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
+        let data = "199
+200
+208
+210
+200
+207
+240
+269
+260
+263";
+
+        parse_input(&data)
     }
 
     #[test]

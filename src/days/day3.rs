@@ -51,9 +51,8 @@ fn calculate_dynamic(
         .fold(0, |acc, i| acc << 1 ^ *i as i32)
 }
 
-pub fn input() -> Vec<Vec<u8>> {
-    let bytes: Vec<u8> = read("inputs/day3.txt")
-        .unwrap()
+fn parse_input(data: &Vec<u8>) -> Vec<Vec<u8>> {
+    let bytes: Vec<u8> = data
         .iter()
         .map(|b| match b {
             b'0' => 0,
@@ -64,6 +63,11 @@ pub fn input() -> Vec<Vec<u8>> {
         .collect();
 
     bytes.split(|b| *b == 2).map(|arr| arr.to_vec()).collect()
+}
+
+pub fn input() -> Vec<Vec<u8>> {
+    let data = read("inputs/day.txt").unwrap();
+    parse_input(&data)
 }
 
 pub fn part1(numbers: &Vec<Vec<u8>>) -> i32 {

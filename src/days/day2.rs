@@ -7,10 +7,8 @@ pub enum Instruction {
     Forward(i32),
 }
 
-pub fn input() -> Vec<Instruction> {
-    read_to_string("inputs/day2.txt")
-        .unwrap()
-        .split('\n')
+fn parse_input(data: &str) -> Vec<Instruction> {
+    data.split('\n')
         .map(|n| {
             let parts: Vec<&str> = n.split(' ').collect();
             let value = parts[1].parse().unwrap();
@@ -23,6 +21,11 @@ pub fn input() -> Vec<Instruction> {
             }
         })
         .collect()
+}
+
+pub fn input() -> Vec<Instruction> {
+    let data = read_to_string("inputs/day2.txt").unwrap();
+    parse_input(&data)
 }
 
 pub fn part1(instructions: &Vec<Instruction>) -> i32 {
