@@ -14,8 +14,8 @@ pub fn input() -> Vec<i32> {
     parse_input(&data)
 }
 
-pub fn part1(crabs: &Vec<i32>) -> i32 {
-    let mut crabs = crabs.clone();
+pub fn part1(crabs: &[i32]) -> i32 {
+    let mut crabs = crabs.to_owned();
     crabs.sort_unstable();
 
     let median = crabs[crabs.len() / 2];
@@ -27,7 +27,7 @@ pub fn part1(crabs: &Vec<i32>) -> i32 {
         .sum()
 }
 
-pub fn part2(crabs: &Vec<i32>) -> i32 {
+pub fn part2(crabs: &[i32]) -> i32 {
     let max = *crabs.iter().max().unwrap();
     let min = *crabs.iter().min().unwrap();
 

@@ -11,7 +11,7 @@ pub fn input() -> Vec<i32> {
     parse_input(&data)
 }
 
-pub fn part1(integers: &Vec<i32>) -> i32 {
+pub fn part1(integers: &[i32]) -> i32 {
     let mut count = 0;
     let mut last = integers[0];
 
@@ -25,7 +25,7 @@ pub fn part1(integers: &Vec<i32>) -> i32 {
     count
 }
 
-pub fn part2(integers: &Vec<i32>) -> i32 {
+pub fn part2(integers: &[i32]) -> i32 {
     let mut count = 0;
     let mut last = 0;
 

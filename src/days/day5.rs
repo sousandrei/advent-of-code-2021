@@ -100,7 +100,7 @@ pub fn input() -> Vec<Line> {
     parse_input(&data)
 }
 
-pub fn part1(data: &Vec<Line>) -> i32 {
+pub fn part1(data: &[Line]) -> i32 {
     let mut counter: HashMap<Point, usize> = HashMap::new();
 
     for line in data.iter() {
@@ -111,7 +111,7 @@ pub fn part1(data: &Vec<Line>) -> i32 {
     *overlaps as i32
 }
 
-pub fn part2(data: &Vec<Line>) -> i32 {
+pub fn part2(data: &[Line]) -> i32 {
     let mut counter: HashMap<Point, usize> = HashMap::new();
 
     for line in data.iter() {

@@ -38,7 +38,7 @@ pub fn input() -> Vec<Fish> {
     parse_input(&data)
 }
 
-pub fn part1(fishes: &Vec<Fish>) -> usize {
+pub fn part1(fishes: &[Fish]) -> usize {
     let mut ages = [0; 9];
 
     for Fish(f) in fishes {
@@ -50,7 +50,7 @@ pub fn part1(fishes: &Vec<Fish>) -> usize {
     ages.iter().sum()
 }
 
-pub fn part2(fishes: &Vec<Fish>) -> usize {
+pub fn part2(fishes: &[Fish]) -> usize {
     let mut ages = [0; 9];
 
     for Fish(f) in fishes {

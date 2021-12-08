@@ -28,7 +28,7 @@ pub fn input() -> Vec<Instruction> {
     parse_input(&data)
 }
 
-pub fn part1(instructions: &Vec<Instruction>) -> i32 {
+pub fn part1(instructions: &[Instruction]) -> i32 {
     let mut depth = 0;
     let mut pos = 0;
 
@@ -43,7 +43,7 @@ pub fn part1(instructions: &Vec<Instruction>) -> i32 {
     depth * pos
 }
 
-pub fn part2(instructions: &Vec<Instruction>) -> i32 {
+pub fn part2(instructions: &[Instruction]) -> i32 {
     let mut depth = 0;
     let mut pos = 0;
     let mut aim = 0;
@@ -64,19 +64,17 @@ pub fn part2(instructions: &Vec<Instruction>) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use std::vec;
-
     use super::*;
 
     fn input() -> Vec<Instruction> {
-        vec![
-            Instruction::Forward(5),
-            Instruction::Down(5),
-            Instruction::Forward(8),
-            Instruction::Up(3),
-            Instruction::Down(8),
-            Instruction::Forward(2),
-        ]
+        let data = "forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2";
+
+        parse_input(&data)
     }
 
     #[test]

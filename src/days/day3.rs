@@ -51,7 +51,7 @@ fn calculate_dynamic(
         .fold(0, |acc, i| acc << 1 ^ *i as i32)
 }
 
-fn parse_input(data: &Vec<u8>) -> Vec<Vec<u8>> {
+fn parse_input(data: &[u8]) -> Vec<Vec<u8>> {
     let bytes: Vec<u8> = data
         .iter()
         .map(|b| match b {
@@ -70,7 +70,7 @@ pub fn input() -> Vec<Vec<u8>> {
     parse_input(&data)
 }
 
-pub fn part1(numbers: &Vec<Vec<u8>>) -> i32 {
+pub fn part1(numbers: &[Vec<u8>]) -> i32 {
     let mut counter: Vec<Counter> = vec![];
 
     numbers
@@ -88,8 +88,8 @@ pub fn part1(numbers: &Vec<Vec<u8>>) -> i32 {
     gamma * epsilon
 }
 
-pub fn part2(numbers: &Vec<Vec<u8>>) -> i32 {
-    let oxigen = calculate_dynamic(numbers.clone(), |counter, i, &number| {
+pub fn part2(numbers: &[Vec<u8>]) -> i32 {
+    let oxigen = calculate_dynamic(numbers.to_owned(), |counter, i, &number| {
         if counter[i].ones >= counter[i].zeros {
             number[i] == 1
         } else {
@@ -97,7 +97,7 @@ pub fn part2(numbers: &Vec<Vec<u8>>) -> i32 {
         }
     });
 
-    let co2 = calculate_dynamic(numbers.clone(), |counter, i, &number| {
+    let co2 = calculate_dynamic(numbers.to_owned(), |counter, i, &number| {
         if counter[i].ones >= counter[i].zeros {
             number[i] == 0
         } else {
@@ -110,22 +110,23 @@ pub fn part2(numbers: &Vec<Vec<u8>>) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use std::vec;
-
     use super::*;
 
     fn input() -> Vec<Vec<u8>> {
-        vec![
-            "00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000",
-            "11001", "00010", "01010",
-        ]
-        .into_iter()
-        .map(|n| {
-            n.chars()
-                .map(|c| c.to_digit(2).unwrap() as u8)
-                .collect::<Vec<u8>>()
-        })
-        .collect()
+        let data = "00100
+11110
+10110
+10111
+10101
+01111
+00111
+11100
+10000
+11001
+00010
+01010";
+
+        parse_input(&data.as_bytes().to_vec())
     }
 
     #[test]
