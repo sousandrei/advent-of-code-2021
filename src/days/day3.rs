@@ -66,7 +66,7 @@ fn parse_input(data: &[u8]) -> Vec<Vec<u8>> {
 }
 
 pub fn input() -> Vec<Vec<u8>> {
-    let data = read("inputs/day.txt").unwrap();
+    let data = read("inputs/day3.txt").unwrap();
     parse_input(&data)
 }
 
